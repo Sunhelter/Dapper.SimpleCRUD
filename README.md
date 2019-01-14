@@ -1,471 +1,470 @@
-Dapper.SimpleCRUD - simple CRUD helpers for Dapper
+Dapper.SimpleCRUD  -  Dapper的简单CRUD助手
 ========================================
-Features
+特征
 --------
-<img  align="right" src="https://raw.githubusercontent.com/ericdc1/Dapper.SimpleCRUD/master/images/SimpleCRUD-200x200.png" alt="SimpleCRUD">
-Dapper.SimpleCRUD is a [single file](https://github.com/ericdc1/Dapper.SimpleCRUD/blob/master/Dapper.SimpleCRUD/SimpleCRUD.cs) you can drop in to your project that will extend your IDbConnection interface. (If you want dynamic support, you need an [additional file](https://github.com/ericdc1/Dapper.SimpleCRUD/blob/master/Dapper.SimpleCRUD/SimpleCRUDAsync.cs).)
+<img align =“right”src =“https://raw.githubusercontent.com/ericdc1/Dapper.SimpleCRUD/master/images/SimpleCRUD-200x200.png"alt =”SimpleCRUD“>
+Dapper.SimpleCRUD是一个[单个文件]（https://github.com/ericdc1/Dapper.SimpleCRUD/blob/master/Dapper.SimpleCRUD/SimpleCRUD.cs），您可以直接进入将扩展IDbConnection接口的项目。 （如果需要动态支持，则需要[附加文件]（https://github.com/ericdc1/Dapper.SimpleCRUD/blob/master/Dapper.SimpleCRUD/SimpleCRUDAsync.cs）。）
 
-Who wants to write basic read/insert/update/delete statements? 
+谁想编写基本的read / insert / update / delete语句？
 
-The existing Dapper extensions did not fit my ideal pattern. I wanted simple CRUD operations with smart defaults without anything extra. I also wanted to have models with additional properties that did not directly map to the database. For example - a FullName property that combines FirstName and LastName in its getter - and not add FullName to the Insert and Update statements.
+现有的Dapper扩展不符合我的理想模式。我希望简单的CRUD操作具有智能默认值而无需额外的任何操作。我还想让模型具有未直接映射到数据库的其他属性。例如 - 在其getter中组合FirstName和LastName的FullName属性 - 而不是将FullName添加到Insert和Update语句中。
 
-I wanted the primary key column to be Id in most cases but allow overriding with an attribute.
+在大多数情况下，我希望主键列为Id，但允许覆盖属性。
 
-Finally, I wanted the table name to match the class name by default but allow overriding with an attribute. 
+最后，我希望表名默认匹配类名，但允许覆盖属性。
 
-This extension adds the following 8 helpers: 
+此扩展添加以下8个帮助程序：
 
-- Get(id) - gets one record based on the primary key 
-- GetList&lt;Type&gt;() - gets list of records all records from a table
-- GetList&lt;Type&gt;(anonymous object for where clause) - gets list of all records matching the where options
-- GetList&lt;Type&gt;(string for conditions, anonymous object with parameters) - gets list of all records matching the conditions
-- GetListPaged&lt;Type&gt;(int pagenumber, int itemsperpage, string for conditions, string for order, anonymous object with parameters) - gets paged list of all records matching the conditions
-- Insert(entity) - Inserts a record and returns the new primary key
-- Update(entity) - Updates a record
-- Delete&lt;Type&gt;(id) - Deletes a record based on primary key
-- Delete(entity) - Deletes a record based on the typed entity
-- DeleteList&lt;Type&gt;(anonymous object for where clause) - deletes all records matching the where options
-- DeleteList&lt;Type&gt;(string for conditions, anonymous object with parameters) - deletes list of all records matching the conditions
-- RecordCount&lt;Type&gt;(string for conditions,anonymous object with parameters) -gets count of all records matching the conditions 
+ -  Get（id） - 根据主键获取一条记录
+ -  GetList＆lt; Type＆gt;（） - 获取表中所有记录的记录列表
+ -  GetList＆lt; Type＆gt;（where子句的匿名对象） - 获取与where选项匹配的所有记录的列表
+ -  GetList＆lt; Type＆gt;（条件的字符串，带参数的匿名对象） - 获取与条件匹配的所有记录的列表
+ -  GetListPaged＆lt; Type＆gt;（int pagenumber，int itemsperpage，条件字符串，订单字符串，带参数的匿名对象） - 获取与条件匹配的所有记录的分页列表
+ - 插入（实体） - 插入记录并返回新的主键
+ - 更新（实体） - 更新记录
+ - 删除＆lt;类型＆gt;（id） - 删除基于主键的记录
+ - 删除（实体） - 根据键入的实体删除记录
+ -  DeleteList＆lt; Type＆gt;（where子句的匿名对象） - 删除与where选项匹配的所有记录
+ -  DeleteList＆lt; Type＆gt;（条件的字符串，带参数的匿名对象） - 删除符合条件的所有记录的列表
+ -  RecordCount＆lt; Type＆gt;（条件的字符串，带参数的匿名对象）-gets计算与条件匹配的所有记录
 
 
-For projects targeting .NET 4.5 or later, the following 8 helpers exist for async operations:
+对于面向.NET 4.5或更高版本的项目，异步操作存在以下8个帮助程序：
 
-- GetAsync(id) - gets one record based on the primary key 
-- GetListAsync&lt;Type&gt;() - gets list of records all records from a table
-- GetListAsync&lt;Type&gt;(anonymous object for where clause) - gets list of all records matching the where options
-- GetListAsync&lt;Type&gt;(string for conditions, anonymous object with parameters) - gets list of all records matching the conditions
-- GetListPagedAsync&lt;Type&gt;(int pagenumber, int itemsperpage, string for conditions, string for order, anonymous object with parameters)  - gets paged list of all records matching the conditions
-- InsertAsync(entity) - Inserts a record and returns the new primary key
-- UpdateAsync(entity) - Updates a record
-- DeleteAsync&lt;Type&gt;(id) - Deletes a record based on primary key
-- DeleteAsync(entity) - Deletes a record based on the typed entity
-- DeleteListAsync&lt;Type&gt;(anonymous object for where clause) - deletes all records matching the where options
-- DeleteListAsync&lt;Type&gt;(string for conditions, anonymous object with parameters) - deletes list of all records matching the conditions
-- RecordCountAsync&lt;Type&gt;(string for conditions, anonymous object with parameters) -gets count of all records matching the conditions 
+ -  GetAsync（id） - 根据主键获取一条记录
+ -  GetListAsync＆lt; Type＆gt;（） - 获取表中所有记录的记录列表
+ -  GetListAsync＆lt; Type＆gt;（where子句的匿名对象） - 获取与where选项匹配的所有记录的列表
+ -  GetListAsync＆lt; Type＆gt;（条件的字符串，带参数的匿名对象） - 获取符合条件的所有记录的列表
+ -  GetListPagedAsync＆lt; Type＆gt;（int pagenumber，int itemsperpage，条件字符串，订单字符串，带参数的匿名对象） - 获取与条件匹配的所有记录的分页列表
+ -  InsertAsync（entity） - 插入记录并返回新的主键
+ -  UpdateAsync（entity） - 更新记录
+ -  DeleteAsync＆lt; Type＆gt;（id） - 删除基于主键的记录
+ -  DeleteAsync（entity） - 根据键入的实体删除记录
+ -  DeleteListAsync＆lt; Type＆gt;（where子句的匿名对象） - 删除与where选项匹配的所有记录
+ -  DeleteListAsync＆lt; Type＆gt;（条件的字符串，带参数的匿名对象） - 删除符合条件的所有记录的列表
+ -  RecordCountAsync＆lt; Type＆gt;（条件的字符串，带参数的匿名对象）-gets计算与条件匹配的所有记录
 
-If you need something more complex use Dapper's Query or Execute methods!
+如果你需要更复杂的东西，可以使用Dapper的Query或Execute方法！
 
-Note: all extension methods assume the connection is already open, they will fail if the connection is closed.
+注意：所有扩展方法都假定连接已打开，如果连接已关闭，它们将失败。
 
-Install via NuGet - https://nuget.org/packages/Dapper.SimpleCRUD
+通过NuGet安装 -  https://nuget.org/packages/Dapper.SimpleCRUD
 
-Check out the model generator [T4 template](https://nuget.org/packages/Dapper.SimpleCRUD.ModelGenerator/) to generate your POCOs. Documentation is at https://github.com/ericdc1/Dapper.SimpleCRUD/wiki/T4-Template
+查看模型生成器[T4模板]（https://nuget.org/packages/Dapper.SimpleCRUD.ModelGenerator/）以生成您的POCO。文档位于https://github.com/ericdc1/Dapper.SimpleCRUD/wiki/T4-Template
 
-Get a single record mapped to a strongly typed object
-------------------------------------------------------------
+获取映射到强类型对象的单个记录
+-------------------------------------------------- ----------
 
-```csharp
- public static T Get<T>(this IDbConnection connection, int id)
+```CSHARP
+ public static T Get <T>（此IDbConnection连接，int id）
 ```
 
-Example basic usage:
+示例基本用法：
 
-```csharp
-public class User
+```CSHARP
+公共类用户
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public int Age { get; set; }
+    public int Id {get;组; }
+    public string Name {get;组; }
+    public int Age {get;组; }
 }
       
-var user = connection.Get<User>(1);   
+var user = connection.Get <User>（1）;
 ```
-Results in executing this SQL 
-```sql
-Select Id, Name, Age from [User] where Id = 1 
+执行此SQL的结果
+```SQL
+从[用户]中选择ID，名称，年龄，其中Id = 1
 ```
 
-More complex example: 
-```csharp
-    [Table("Users")]
-    public class User
+更复杂的例子：
+```CSHARP
+    [表（ “用户”）]
+    公共类用户
     {
-        [Key]
-        public int UserId { get; set; }
-        [Column("strFirstName")]
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public int Age { get; set; }
+        [键]
+        public int UserId {get;组; }
+        [柱（ “strFirstName”）]
+        public string FirstName {get;组; }
+        public string LastName {get;组; }
+        public int Age {get;组; }
     }
     
-    var user = connection.Get<User>(1);  
+    var user = connection.Get <User>（1）;
 ```
 
-Results in executing this SQL 
-```sql
-Select UserId, strFirstName as FirstName, LastName, Age from [Users] where UserId = @UserID
+执行此SQL的结果
+```SQL
+从[Users]中选择UserId，strFirstName作为FirstName，LastName，Age，其中UserId = @UserID
 ```
 
-Notes:
+笔记：
 
-- The [Key] attribute can be used from the Dapper namespace or from System.ComponentModel.DataAnnotations
-- The [Table] attribute can be used from the Dapper namespace, System.ComponentModel.DataAnnotations.Schema, or System.Data.Linq.Mapping - By default the database table name will match the model name but it can be overridden with this.
-- The [Column] attribute can be used from the Dapper namespace, System.ComponentModel.DataAnnotations.Schema, or System.Data.Linq.Mapping - By default the column name will match the property name but it can be overridden with this. You can even use the model property names in the where clause anonymous object and SimpleCRUD will generate a proper where clause to match the database based on the column attribute
+ - 可以从Dapper命名空间或System.ComponentModel.DataAnnotations中使用[Key]属性。
+ - 可以从Dapper命名空间，System.ComponentModel.DataAnnotations.Schema或System.Data.Linq.Mapping中使用[Table]属性 - 默认情况下，数据库表名称将与模型名称匹配，但可以使用此名称覆盖它。
+ -  [Column]属性可以在Dapper命名空间，System.ComponentModel.DataAnnotations.Schema或System.Data.Linq.Mapping中使用 - 默认情况下，列名称将与属性名称匹配，但可以使用此名称覆盖它。您甚至可以在where子句中使用模型属性名称匿名对象，SimpleCRUD将根据列属性生成适当的where子句以匹配数据库
 
-- GUID (uniqueidentifier) primary keys are supported (autopopulates if no value is passed in)
+ - 支持GUID（uniqueidentifier）主键（如果没有传入值，则自动填充）
 
-Execute a query and map the results to a strongly typed List
-------------------------------------------------------------
+执行查询并将结果映射到强类型列表
+-------------------------------------------------- ----------
 
-```csharp
-public static IEnumerable<T> GetList<T>(this IDbConnection connection)
+```CSHARP
+public static IEnumerable <T> GetList <T>（此IDbConnection连接）
 ```
 
-Example usage: 
+用法示例：
 
-```csharp
-public class User
+```CSHARP
+公共类用户
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public int Age { get; set; }
+    public int Id {get;组; }
+    public string Name {get;组; }
+    public int Age {get;组; }
 }
 ```
 
-```csharp     
-var user = connection.GetList<User>();  
+```CSHARP
+var user = connection.GetList <User>（）;
 ```
-Results in 
-```sql
-Select * from [User]
-```
-
-Execute a query with where conditions and map the results to a strongly typed List
-------------------------------------------------------------
-
-```csharp
-public static IEnumerable<T> GetList<T>(this IDbConnection connection, object whereConditions)
+结果是
+```SQL
+从[用户]中选择*
 ```
 
-Example usage: 
+执行具有条件的查询，并将结果映射到强类型列表
+-------------------------------------------------- ----------
 
-```csharp
-public class User
+```CSHARP
+public static IEnumerable <T> GetList <T>（此IDbConnection连接，对象whereConditions）
+```
+
+用法示例：
+
+```CSHARP
+公共类用户
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public int Age { get; set; }
+    public int Id {get;组; }
+    public string Name {get;组; }
+    public int Age {get;组; }
 }
   
-var user = connection.GetList<User>(new { Age = 10 });  
+var user = connection.GetList <User>（new {Age = 10}）;
 ```
-Results in 
-```sql
-Select * from [User] where Age = @Age
+结果是
+```SQL
+从[User]中选择*，其中Age = @Age
 ```
-Notes:
-- To get all records use an empty anonymous object - new{}
-- The where options are mapped as "where [name] = [value]"
-- If you need > < like, etc simply use the manual where clause method or Dapper's Query method
-- By default the select statement would include all properties in the class - The IgnoreSelect attributes remove items from the select statement
+笔记：
+ - 要获取所有记录，请使用空的匿名对象 - 新{}
+ -  where选项被映射为“where [name] = [value]”
+ - 如果你需要> <like等，只需使用manual where子句方法或Dapper的Query方法
+ - 默认情况下，select语句将包括类中的所有属性 -  IgnoreSelect属性从select语句中删除项
 
  
-Execute a query with a where clause and map the results to a strongly typed List
-------------------------------------------------------------
+使用where子句执行查询，并将结果映射到强类型列表
+-------------------------------------------------- ----------
 
-```csharp
-public static IEnumerable<T> GetList<T>(this IDbConnection connection, string conditions, object parameters = null)
+```CSHARP
+public static IEnumerable <T> GetList <T>（此IDbConnection连接，字符串条件，对象参数= null）
 ```
 
-Example usage: 
+用法示例：
 
-```csharp
-public class User
+```CSHARP
+公共类用户
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public int Age { get; set; }
+    public int Id {get;组; }
+    public string Name {get;组; }
+    public int Age {get;组; }
 }
   
-var user = connection.GetList<User>("where age = 10 or Name like '%Smith%'");  
+var user = connection.GetList <User>（“where age = 10或Name like'％Smith％'”）;
 ```
 
-or with parameters
+或带参数
 
-```csharp
-var encodeForLike = term => term.Replace("[", "[[]").Replace("%", "[%]");
-string likename = "%" + encodeForLike("Smith") + "%";
-var user = connection.GetList<User>("where age = @Age or Name like @Name", new {Age = 10, Name = likename});  
+```CSHARP
+var encodeForLike = term => term.Replace（“[”，“[[]”）。Replace（“％”，“[％]”）;
+string likename =“％”+ encodeForLike（“Smith”）+“％”;
+var user = connection.GetList <User>（“where age = @Age或Name like @Name”，new {Age = 10，Name = likename}）;
 ```
-Results in 
-```sql
-Select * from [User] where age = 10 or Name like '%Smith%'
-```
-
-Notes:
-- This uses your raw SQL so be careful to not create SQL injection holes or use the Parameters option
-- There is nothing stopping you from adding an order by clause using this method 
-
-Execute a query with a where clause and map the results to a strongly typed List with Paging
-------------------------------------------------------------
-
-```csharp
-public static IEnumerable<T> GetListPaged<T>(this IDbConnection connection, int pageNumber, int rowsPerPage, string conditions, string orderby, object parameters = null)
+结果是
+```SQL
+从年龄= 10的[用户]中选择*或者像'％Smith％'这样的名称
 ```
 
-Example usage: 
+笔记：
+ - 这使用原始SQL，因此请注意不要创建SQL注入漏洞或使用“参数”选项
+ - 没有什么可以阻止您使用此方法添加order by子句
 
-```csharp
-public class User
+使用where子句执行查询，并将结果映射到具有Paging的强类型List
+-------------------------------------------------- ----------
+
+```CSHARP
+public static IEnumerable <T> GetListPaged <T>（此IDbConnection连接，int pageNumber，int rowsPerPage，字符串条件，字符串orderby，对象参数= null）
+```
+
+用法示例：
+
+```CSHARP
+公共类用户
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public int Age { get; set; }
+    public int Id {get;组; }
+    public string Name {get;组; }
+    public int Age {get;组; }
 }
   
-var user = connection.GetListPaged<User>(1,10,"where age = 10 or Name like '%Smith%'","Name desc");  
+var user = connection.GetListPaged <User>（1,10，“where age = 10或Name like'％Smith％'”，“Name desc”）;
 ```
-Results in (SQL Server dialect)
-```sql
-SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY Name desc) AS PagedNumber, Id, Name, Age FROM [User] where age = 10 or Name like '%Smith%') AS u WHERE PagedNUMBER BETWEEN ((1 - 1) * 10 + 1) AND (1 * 10)
+结果（SQL Server方言）
+```SQL
+SELECT * FROM（SELECT ROW_NUMBER（）OVER（ORDER BY Name desc）AS PagedNumber，Id，Name，Age FROM [User] where age = 10或Name like'％Smith％'）AS u WHERE PagedNUMBER BETWEEN（（1  -  1） ）* 10 + 1）和（1 * 10）
 ```
-or with parameters
-```csharp
-var user = connection.GetListPaged<User>(1,10,"where age = @Age","Name desc", new {Age = 10});  
+或带参数
+```CSHARP
+var user = connection.GetListPaged <User>（1,10，“where age = @Age”，“Name desc”，new {Age = 10}）;
 ```
-Results in (SQL Server dialect)
-```sql
-SELECT * FROM (SELECT ROW_NUMBER() OVER(ORDER BY Name desc) AS PagedNumber, Id, Name, Age FROM [User] where age = 10) AS u WHERE PagedNUMBER BETWEEN ((1 - 1) * 10 + 1) AND (1 * 10)
-```
-
-Notes:
-- This uses your raw SQL so be careful to not create SQL injection holes or use the Parameters option
-- It is recommended to use https://github.com/martijnboland/MvcPaging for the paging helper for your views 
-  - @Html.Pager(10, 1, 100) - items per page, page number, total records
-
-
-Insert a record
-------------------------------------------------------------
-
-```csharp
-public static int Insert(this IDbConnection connection, object entityToInsert)
+结果（SQL Server方言）
+```SQL
+SELECT * FROM（SELECT ROW_NUMBER（）OVER（ORDER BY Name desc）AS PagedNumber，Id，Name，Age FROM [User] where age = 10）AS u WHERE PagedNUMBER BETWEEN（（1  -  1）* 10 + 1）AND（ 1 * 10）
 ```
 
-Example usage: 
+笔记：
+ - 这使用原始SQL，因此请注意不要创建SQL注入漏洞或使用“参数”选项
+ - 建议使用https://github.com/martijnboland/MvcPaging作为您的视图的分页助手
+   -  @ Html.Pager（10,1,100） - 每页的项目，页码，总记录
 
-```csharp     
-[Table("Users")]
-public class User
+
+插入记录
+-------------------------------------------------- ----------
+
+```CSHARP
+public static int Insert（此IDbConnection连接，对象entityToInsert）
+```
+
+用法示例：
+
+```CSHARP
+[表（ “用户”）]
+公共类用户
 {
-   [Key]
-   public int UserId { get; set; }
-   public string FirstName { get; set; }
-   public string LastName { get; set; }
-   public int Age { get; set; }
+   [键]
+   public int UserId {get;组; }
+   public string FirstName {get;组; }
+   public string LastName {get;组; }
+   public int Age {get;组; }
 
-   //Additional properties not in database
-   [Editable(false)]
-   public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
-   public List<User> Friends { get; set; }
-   [ReadOnly(true)]
-   public DateTime CreatedDate { get; set; }
+   //不在数据库中的其他属性
+   [编辑（假）]
+   public string FullName {get {return string.Format（“{0} {1}”，FirstName，LastName）; }}
+   public List <User> Friends {get;组; }
+   [只读（真）]
+   public DateTime CreatedDate {get;组; }
 }
 
-var newId = connection.Insert(new User { FirstName = "User", LastName = "Person",  Age = 10 });  
+var newId = connection.Insert（new User {FirstName =“User”，LastName =“Person”，Age = 10}）;
 ```
-Results in executing this SQL 
-```sql
-Insert into [Users] (FirstName, LastName, Age) VALUES (@FirstName, @LastName, @Age)
-```
-
-Notes:
-- Default table name would match the class name - The Table attribute overrides this
-- Default primary key would be Id - The Key attribute overrides this
-- By default the insert statement would include all properties in the class - The Editable(false),  ReadOnly(true), and IgnoreInsert attributes remove items from the insert statement
-- Properties decorated with ReadOnly(true) are only used for selects
-- Complex types are not included in the insert statement - This keeps the List<User> out of the insert even without the Editable attribute. You can include complex types if you decorate them with Editable(true). This is useful for enumerators.
-
-Update a record
-------------------------------------------------------------
-
-```csharp
-public static int Update(this IDbConnection connection, object entityToUpdate)
+执行此SQL的结果
+```SQL
+插入[Users]（FirstName，LastName，Age）VALUES（@ FirstName，@ LastName，@ Age）
 ```
 
-Example usage: 
+笔记：
+ - 默认表名称将与类名称匹配 - “表”属性将覆盖此名称
+ - 默认主键为Id  -  Key属性会覆盖此项
+ - 默认情况下，insert语句将包括类中的所有属性 - 可编辑（false），ReadOnly（true）和IgnoreInsert属性从insert语句中删除项
+ - 用ReadOnly（true）修饰的属性仅用于选择
+ - 复杂类型不包含在insert语句中 - 即使没有Editable属性，这也会使List <User>不在插入中。如果使用Editable（true）装饰它们，则可以包含复杂类型。这对于枚举器很有用。
 
-```csharp    
-[Table("Users")]
-public class User
+更新记录
+-------------------------------------------------- ----------
+
+```CSHARP
+public static int Update（此IDbConnection连接，对象entityToUpdate）
+```
+
+用法示例：
+
+```CSHARP
+[表（ “用户”）]
+公共类用户
 {
-   [Key]
-   public int UserId { get; set; }
-   [Column("strFirstName")]
-   public string FirstName { get; set; }
-   public string LastName { get; set; }
-   public int Age { get; set; }
+   [键]
+   public int UserId {get;组; }
+   [柱（ “strFirstName”）]
+   public string FirstName {get;组; }
+   public string LastName {get;组; }
+   public int Age {get;组; }
 
-   //Additional properties not in database
-   [Editable(false)]
-   public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
-   public List<User> Friends { get; set; }
+   //不在数据库中的其他属性
+   [编辑（假）]
+   public string FullName {get {return string.Format（“{0} {1}”，FirstName，LastName）; }}
+   public List <User> Friends {get;组; }
 }
-connection.Update(entity);
+connection.Update（实体）;
 
 ```
-Results in executing this SQL  
-```sql
-Update [Users] Set (strFirstName=@FirstName, LastName=@LastName, Age=@Age) Where ID = @ID
+执行此SQL的结果
+```SQL
+更新[用户]设置（strFirstName = @ FirstName，LastName = @ LastName，Age = @ Age）其中ID = @ID
 ```
 
-Notes:
-- By default the update statement would include all properties in the class - The Editable(false),  ReadOnly(true), and IgnoreUpdate attributes remove items from the update statement
+笔记：
+ - 默认情况下，update语句将包括类中的所有属性 - 可编辑（false），ReadOnly（true）和IgnoreUpdate属性从update语句中删除项
 
-Delete a record
-------------------------------------------------------------
+删除记录
+-------------------------------------------------- ----------
 
-```csharp
-public static int Delete<T>(this IDbConnection connection, int Id)
+```CSHARP
+public static int Delete <T>（此IDbConnection连接，int Id）
 ```
 
-Example usage: 
+用法示例：
 
-```csharp     
-public class User
+```CSHARP
+公共类用户
 {
-   public int Id { get; set; }
-   public string FirstName { get; set; }
-   public string LastName { get; set; }
-   public int Age { get; set; }
+   public int Id {get;组; }
+   public string FirstName {get;组; }
+   public string LastName {get;组; }
+   public int Age {get;组; }
 }
-connection.Delete<User>(newid);
+connection.Delete <用户>（NEWID）;
 
 ```
-Or 
+要么
 
-```csharp
-public static int Delete<T>(this IDbConnection connection, T entityToDelete)
+```CSHARP
+public static int Delete <T>（此IDbConnection连接，T entityToDelete）
 ```
 
-Example usage: 
+用法示例：
 
-```csharp 
-public class User
+```CSHARP
+公共类用户
 {
-   public int Id { get; set; }
-   public string FirstName { get; set; }
-   public string LastName { get; set; }
-   public int Age { get; set; }
+   public int Id {get;组; }
+   public string FirstName {get;组; }
+   public string LastName {get;组; }
+   public int Age {get;组; }
 }
 
-connection.Delete(entity);
+connection.Delete（实体）;
 ```
 
-Results in executing this SQL  
-```sql
-Delete From [User] Where ID = @ID
+执行此SQL的结果
+```SQL
+从[用户]删除ID = @ID
 ```
 
-Delete multiple records with where conditions
-------------------------------------------------------------
+删除多条记录的条件
+-------------------------------------------------- ----------
 
-```csharp
-public static int DeleteList<T>(this IDbConnection connection, object whereConditions, IDbTransaction transaction = null, int? commandTimeout = null)
+```CSHARP
+public static int DeleteList <T>（此IDbConnection连接，对象whereConditions，IDbTransaction事务= null，int？commandTimeout = null）
 ```
 
-Example usage: 
+用法示例：
 
-```csharp     
-connection.DeleteList<User>(new { Age = 10 });
+```CSHARP
+connection.DeleteList <User>（new {Age = 10}）;
 ```
 
-Delete multiple records with where clause
-------------------------------------------------------------
+使用where子句删除多个记录
+-------------------------------------------------- ----------
 
-```csharp
-public static int DeleteList<T>(this IDbConnection connection, string conditions, object parameters = null, IDbTransaction transaction = null, int? commandTimeout = null)
+```CSHARP
+public static int DeleteList <T>（此IDbConnection连接，字符串条件，对象参数= null，IDbTransaction事务= null，int？commandTimeout = null）
 ```
 
-Example usage: 
+用法示例：
 
-```csharp     
-connection.DeleteList<User>("Where age > 20");
+```CSHARP
+connection.DeleteList <User>（“Where age> 20”）;
 ```
-or with parameters
+或带参数
 
-```csharp     
-connection.DeleteList<User>("Where age > @Age", new {Age = 20});
-```
-
-Get count of records 
-------------------------------------------------------------
-
-```csharp
-public static int RecordCount<T>(this IDbConnection connection, string conditions = "", object parameters = null)
+```CSHARP
+connection.DeleteList <User>（“Where age> @Age”，new {Age = 20}）;
 ```
 
-Example usage: 
+获取记录数
+-------------------------------------------------- ----------
 
-```csharp     
-var count = connection.RecordCount<User>("Where age > 20");
-```
-or with parameters
-
-```csharp     
-var count = connection.RecordCount<User>("Where age > @Age", new {Age = 20});
+```CSHARP
+public static int RecordCount <T>（此IDbConnection连接，字符串条件=“”，对象参数= null）
 ```
 
-Custom table and column name resolvers
+用法示例：
+
+```CSHARP
+var count = connection.RecordCount <User>（“where age> 20”）;
+```
+或带参数
+
+```CSHARP
+var count = connection.RecordCount <User>（“Where age> @Age”，new {Age = 20}）;
+```
+
+自定义表和列名称解析器
 ---------------------
-You can also change the format of table and column names, first create a class implimenting the ITableNameResolver and/or IColumnNameResolver interfaces
-```csharp 
-public class CustomResolver : SimpleCRUD.ITableNameResolver, SimpleCRUD.IColumnNameResolver
+您还可以更改表名和列名的格式，首先创建一个实现ITableNameResolver和/或IColumnNameResolver接口的类
+```CSHARP
+public class CustomResolver：SimpleCRUD.ITableNameResolver，SimpleCRUD.IColumnNameResolver
 {
-    public string ResolveTableName(Type type)
+    public string ResolveTableName（Type type）
     {
-        return string.Format("tbl_{0}", type.Name);
+        return string.Format（“tbl_ {0}”，type.Name）;
     }
 
-    public string ResolveColumnName(PropertyInfo propertyInfo)
+    public string ResolveColumnName（PropertyInfo propertyInfo）
     {
-        return string.Format("{0}_{1}", propertyInfo.DeclaringType.Name, propertyInfo.Name);
+        return string.Format（“{0} _ {1}”，propertyInfo.DeclaringType.Name，propertyInfo.Name）;
     }
 }
 ```
-then apply the resolvers when intializing your application
-```csharp 
-    var resolver = new CustomResolver();
-    SimpleCRUD.SetTableNameResolver(resolver);
-    SimpleCRUD.SetColumnNameResolver(resolver);
+然后在初始化您的应用程序时应用解析器
+```CSHARP
+    var resolver = new CustomResolver（）;
+    SimpleCRUD.SetTableNameResolver（分解）;
+    SimpleCRUD.SetColumnNameResolver（分解）;
 ```
 
-Database support
+数据库支持
 ---------------------
-* There is an option to change database dialect. Default is Microsoft SQL Server but can be changed to PostgreSQL or MySQL. We dropped SQLite support with the .Net Core release. 
-```csharp 
-   SimpleCRUD.SetDialect(SimpleCRUD.Dialect.PostgreSQL);
+*可以选择更改数据库方言。默认值为Microsoft SQL Server，但可以更改为PostgreSQL或MySQL。我们放弃了.Net Core版本的SQLite支持。
+```CSHARP
+   SimpleCRUD.SetDialect（SimpleCRUD.Dialect.PostgreSQL）;
     
-   SimpleCRUD.SetDialect(SimpleCRUD.Dialect.MySQL);
+   SimpleCRUD.SetDialect（SimpleCRUD.Dialect.MySQL）;
 ```
 
-Attributes
+属性
 ---------------------
-The following attributes can be applied to properties in your model
+以下属性可应用于模型中的属性
 
-[Table("YourTableName")] -  By default the database table name will match the model name but it can be overridden with this.
+[Table（“YourTableName”）]  - 默认情况下，数据库表名称将与模型名称匹配，但可以使用此名称覆盖它。
    
-[Column("YourColumnName"] - By default the column name will match the property name but it can be overridden with this. You can even use the model property names in the where clause anonymous object and SimpleCRUD will generate a proper where clause to match the database based on the column attribute
+[Column（“YourColumnName”]  - 默认情况下，列名称将与属性名称匹配，但可以使用此名称覆盖。您甚至可以在where子句中使用模型属性名称匿名对象，SimpleCRUD将生成适当的where子句以匹配基于列属性的数据库
    
-[Key] -By default the Id integer field is considered the primary key and is excluded from insert. The [Key] attribute lets you specify any Int or Guid as the primary key.
+[Key]  - 默认情况下，Id整数字段被视为主键，并从插入中排除。 [Key]属性允许您指定任何Int或Guid作为主键。
    
-[Required] - By default the [Key] property is not inserted as it is expected to be an autoincremented by the database. You can mark a property as a [Key] and [Required] if you want to specify the value yourself during the insert. 
+[必需]  - 默认情况下不插入[Key]属性，因为它应该是数据库自动增加的。如果要在插入期间自己指定值，可以将属性标记为[Key]和[Required]。
 
-[Editable(false)] - By default the select, insert, and update statements include all properties in the class - The Editable(false) and attribute excludes the property from being included. A good example for this is a FullName property that is derived from combining FirstName and Lastname in the model but the FullName field isn't actually in the database. Complex types are not included in the insert statement - This keeps the List out of the insert even without the Editable attribute. 
+[可编辑（false）]  - 默认情况下，select，insert和update语句包括类中的所有属性 - 可编辑（false）和属性不包括属性。一个很好的例子是FullName属性，它是从模型中的FirstName和Lastname组合而得的，但FullName字段实际上并不在数据库中。复杂类型不包含在insert语句中 - 即使没有Editable属性，这也会使List保持在插入之外。
 
-[ReadOnly(true)] - Properties decorated with ReadOnly(true) are only used for selects and are excluded from inserts and updates. This would be useful for fields like CreatedDate where the database generates the date on insert and you never want to modify it. 
+[ReadOnly（true）]  - 使用ReadOnly（true）修饰的属性仅用于选择，并从插入和更新中排除。这对于像CreatedDate这样的字段很有用，其中数据库在插入时生成日期而您永远不想修改它。
 
-[IgnoreSelect] - Excludes the property from selects
+[IgnoreSelect]  - 从选择中排除属性
 
-[IgnoreInsert] - Excludes the property from inserts
+[IgnoreInsert]  - 从插入中排除属性
 
-[IgnoreUpdate] - Excludes the property from updates
+[IgnoreUpdate]  - 从更新中排除属性
 
-[NotMapped] - Excludes the property from all operations
+[NotMapped]  - 从所有操作中排除属性
 
 
-Do you have a comprehensive list of examples?
+你有一个完整的例子清单吗？
 ---------------------
-Dapper.SimpleCRUD has a basic test suite in the [test project](https://github.com/ericdc1/dapper.SimpleCRUD/blob/master/Dapper.SimpleCRUDTests/Tests.cs)
-
+Dapper.SimpleCRUD在[测试项目]中有一个基本测试套件（https://github.com/ericdc1/dapper.SimpleCRUD/blob/master/Dapper.SimpleCRUDTests/Tests.cs）
 
